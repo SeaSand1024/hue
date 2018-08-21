@@ -247,7 +247,7 @@ ${ assist.assistPanel() }
             <div class="modal-footer">
               <a href="#" class="btn" data-dismiss="modal">${ _('Cancel') }</a>
               <button class="btn btn-primary disable-feedback" data-bind="click: alias.create, enable: alias.chosenCollections().length > 0 && alias.name() !== ''">
-                 ${ _('Create') }
+                  ${ _('Create') }
               </button>
             </div>
           </div>
