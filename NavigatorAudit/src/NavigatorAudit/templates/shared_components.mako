@@ -19,10 +19,10 @@ def is_selected(section, matcher):
             <li class="app-header">
               <a href="/NavigatorAudit">
                 <img src="${ static('NavigatorAudit/art/icon_NavigatorAudit_48.png') }" class="app-icon"  alt="${ _('App icon') }"/>
-                Navigatoraudit
+                Navigator Audit
               </a>
              </li>
-             <li class="${is_selected(section, 'mytab')}"><a href="#">Tab 1</a></li>
+             <li class="${is_selected(section, 'mytab')}"><a href="#">Setup</a></li>
              <li class="${is_selected(section, 'mytab2')}"><a href="#">Tab 2</a></li>
           </ul>
         </div>

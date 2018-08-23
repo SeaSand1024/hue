@@ -7,36 +7,46 @@ ${commonheader("Navigatoraudit", "NavigatorAudit", user, request) | n,unicode}
 
 ${shared.menubar(section='mytab')}
 
-## Use double hashes for a mako template comment
-## Main body
 
 <div class="container-fluid">
   <div class="card">
     <h2 class="card-heading simple">
-      Navigator audit ingest
+      Navigator Audit Ingest
     </h2>
     <p>
-      The traffic example is a pipeline that retrieves measurements of traffic congestion and stores an aggregated view of the traffic congestion
-      at a point in time using the current measurement and all of those in the previous 60 seconds. Within Envelope this uses the Apache Spark Streaming window
-      operations functionality. This example demonstrates use cases that need to do live aggregations of recently received messages prior to user querying.
+Cloudera Navigator Audit is a tool that collects and consolidates audit records from several Hadoop services.
+It offers the ability to forward those events into a Kafka topic for downstream consumption.
+
+This example reads audit events from a Kafka topic populated by Navigator Audit and writes them to Kudu and Solr. 
+We have also added a batch export from Navigator Database to a partitioned table on HDFS filesystem.
     </p>
 
     <h2 class="card-heading simple">
-      Batch
-    </h2>
-    <div class="card-body">
-      <p>Has Sqoop Service: ${ has_kafka_service }</p>
-      <p>Has Impala: ${ has_kudu_service }</p>
-      <p>Has table <a class="button">Create</a></p>
-    </div>
-
-    <h2 class="card-heading simple">
-      Live
+      Live (Kudu SQL)
     </h2>
     <div class="card-body">
       <p>Has Kafka Service: ${ has_kafka_service }</p>
       <p>Has Kafka traffic topic: ${ has_kafka_topic } <a class="button">Create</a></p>
       <p>Has Kudu: ${ has_kudu_service }</p>
+      <p>Has table <a class="button">Create</a></p>
+    </div>
+    
+    <h2 class="card-heading simple">
+      Live (Solr)
+    </h2>
+    <div class="card-body">
+      <p>Has Kafka Service: ${ has_kafka_service }</p>
+      <p>Has Kafka traffic topic: ${ has_kafka_topic } <a class="button">Create</a></p>
+      <p>Has Solr: ${ has_kudu_service }</p>
+      <p>Has collection <a class="button">Create</a></p>
+    </div>
+    
+    <h2 class="card-heading simple">
+      Batch (Sqoop to HDFS)
+    </h2>
+    <div class="card-body">
+      <p>Has Sqoop Service: ${ has_kafka_service }</p>
+      <p>Has Impala: ${ has_kudu_service }</p>
       <p>Has table <a class="button">Create</a></p>
     </div>
   </div>

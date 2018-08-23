@@ -18,8 +18,17 @@
 from desktop.lib.django_util import render
 import datetime
 
+from kafka.kafka_client import KafkaApi
+from kafka.kafka_api import get_topics
+from metadata.manager_client import ManagerApi
+
+
 def index(request):
+  kafka_api = KafkaApi()
+  manager_api = ManagerApi()
+
   return render('index.mako', request, {
-    'date': datetime.datetime.now(),
-    'is_embeddable': request.GET.get('is_embeddable', False),
+    'has_kafka_service': True,
+    'has_kafka_topic': True,
+    'has_kudu_service': True,
   })
