@@ -310,7 +310,7 @@ def importer_submit(request):
   if destination['ouputFormat'] in ('database', 'table'):
     destination['nonDefaultLocation'] = request.fs.netnormpath(destination['nonDefaultLocation']) if destination['nonDefaultLocation'] else destination['nonDefaultLocation']
 
-  if source['inputFormat'] == 'stream':
+  if source['inputFormat'] == 'stream' or destination['ouputFormat'] == 'stream':
     job_handle = _envelope_job(request, source, destination, start_time=start_time, lib_path=destination['indexerJobLibPath'])
   elif destination['ouputFormat'] == 'index':
     source['columns'] = destination['columns']
@@ -474,7 +474,7 @@ def _envelope_job(request, file_format, destination, start_time=None, lib_path=N
   collection_name = destination['name']
   indexer = EnvelopeIndexer(request.user, request.fs)
 
-  lib_path = '/tmp/envelope.jar'
+  lib_path = None # Todo optional input field
   input_path = None
 
   if file_format['inputFormat'] == 'table':
@@ -482,9 +482,10 @@ def _envelope_job(request, file_format, destination, start_time=None, lib_path=N
     table_metadata = db.get_table(database=file_format['databaseName'], table_name=file_format['tableName'])
     input_path = table_metadata.path_location
   elif file_format['inputFormat'] == 'file':
-    input_path = '${nameNode}%s' % file_format["path"]
+    input_path = file_format["path"]
     properties = {
-      'format': 'json'
+      'input_path': input_path,
+      'format': 'csv'
     }
   elif file_format['inputFormat'] == 'stream':
     if file_format['streamSelection'] == 'sfdc':
@@ -500,7 +501,6 @@ def _envelope_job(request, file_format, destination, start_time=None, lib_path=N
       manager = ManagerApi()
       properties = {
         "brokers": manager.get_kafka_brokers(),
-        "output_table": "impala::%s" % collection_name,
         "topics": file_format['kafkaSelectedTopics'],
         "kafkaFieldType": file_format['kafkaFieldType'],
         "kafkaFieldDelimiter": file_format['kafkaFieldDelimiter'],
@@ -534,6 +534,12 @@ def _envelope_job(request, file_format, destination, start_time=None, lib_path=N
         client = SolrClient(request.user)
         kwargs = {}
         _create_solr_collection(request.user, request.fs, client, destination, collection_name, kwargs)
+
+  if destination['outputFormat'] == 'stream':
+    manager = ManagerApi()
+    properties['brokers'] = manager.get_kafka_brokers()
+    properties['topics'] = file_format['kafkaSelectedTopics']
+    properties['kafkaFieldDelimiter'] = file_format['kafkaFieldDelimiter']
 
   properties["app_name"] = 'Data Ingest'
   properties["inputFormat"] = file_format['inputFormat']
