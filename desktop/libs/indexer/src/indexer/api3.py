@@ -523,7 +523,10 @@ def _envelope_job(request, file_format, destination, start_time=None, lib_path=N
         properties['output_table'] = collection_name
     elif destination['outputFormat'] == 'file':
       properties['path'] = file_format["path"]
-      properties['format'] = file_format['tableFormat'] # or csv
+      if file_format['inputFormat'] == 'stream':
+        properties['format'] = 'csv'
+      else:
+        properties['format'] = file_format['tableFormat'] # or csv
     elif destination['outputFormat'] == 'index':
       properties['collectionName'] = collection_name
       properties['connection'] = SOLR_URL.get()
